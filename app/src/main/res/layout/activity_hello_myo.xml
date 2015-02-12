@@ -152,4 +152,12 @@
             android:textSize="15dp" />
     </LinearLayout>
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="50dp"
+        android:text="Hello MYO"
+        android:id="@+id/tv_helloMYO"/>
+
 </LinearLayout>

@@ -13,13 +13,14 @@ import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
+import com.thalmic.myo.Quaternion;
 import com.thalmic.myo.XDirection;
 import com.thalmic.myo.scanner.ScanActivity;
 
 
 public class HelloMYOActivity extends ActionBarActivity {
     private TextView tv_name, tv_macAddress, tv_sync, tv_arm, tv_xDirection, tv_lock, tv_pose;
-
+    private TextView tv_helloMYO;
     private DeviceListener mListener = new AbstractDeviceListener() {
         @Override
         public void onConnect(Myo myo, long timestamp) {
@@ -99,6 +100,27 @@ public class HelloMYOActivity extends ActionBarActivity {
                 myo.unlock(Myo.UnlockType.TIMED);
             }
         }
+
+        @Override
+        public void onOrientationData(Myo myo, long timestamp, Quaternion rotation) {
+            super.onOrientationData(myo, timestamp, rotation);
+            float roll = (float) Math.toDegrees(Quaternion.roll(rotation));
+            float pitch = (float) Math.toDegrees(Quaternion.pitch(rotation));
+            float yaw = (float) Math.toDegrees(Quaternion.yaw(rotation));
+            // Adjust roll and pitch for the orientation of the Myo on the arm.
+            if (myo.getXDirection() == XDirection.TOWARD_ELBOW) {
+                pitch *= -1;
+            }
+            // Next, we apply a rotation to the text view using the roll, pitch, and yaw.
+            //X
+            tv_helloMYO.setRotation(roll);
+            //Y
+            tv_helloMYO.setRotationX(pitch);
+            //Z
+            tv_helloMYO.setRotationY(yaw);
+
+
+        }
     };
 
     @Override
@@ -126,6 +148,7 @@ public class HelloMYOActivity extends ActionBarActivity {
         tv_xDirection = (TextView) findViewById(R.id.tv_xDirection);
         tv_lock = (TextView) findViewById(R.id.tv_lock);
         tv_pose = (TextView) findViewById(R.id.tv_pose);
+        tv_helloMYO = (TextView) findViewById(R.id.tv_helloMYO);
     }
 
     private void setTextDisconnect() {
